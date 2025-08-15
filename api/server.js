@@ -15,7 +15,6 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 app.use(cors());
 app.use(express.json());
 
-// Use os.tmpdir() for temporary file storage
 const upload = multer({
   dest: os.tmpdir(),
   limits: { fileSize: 50 * 1024 * 1024 }
@@ -70,7 +69,6 @@ app.post('/process-audio', upload.single('audio'), async (req, res) => {
     const summary = summaryResult.response.text();
     console.log('Summary generated');
     
-    // Delete the temporary file
     fs.unlink(filePath, (err) => {
       if (err) console.error('Error deleting uploaded file:', err);
     });
@@ -85,7 +83,6 @@ app.post('/process-audio', upload.single('audio'), async (req, res) => {
   } catch (error) {
     console.error('Processing error:', error);
     
-    // Ensure the file is deleted even if an error occurs
     if (req.file) {
       fs.unlink(req.file.path, (err) => {
         if (err) console.error('Error deleting uploaded file:', err);
